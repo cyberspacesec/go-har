@@ -1,181 +1,216 @@
+// Package har provides functionality for parsing and manipulating HAR (HTTP Archive) files.
+// This is a compatibility wrapper that forwards to the implementation in pkg/har.
 package har
 
 import (
-	"encoding/json"
-	"os"
-	"time"
+	"github.com/cyberspacesec/go-har/pkg/har"
 )
 
-// ParseHarFile 解析HAR格式的文件
-func ParseHarFile(harFilePath string) (*Har, error) {
-	harFileBytes, err := os.ReadFile(harFilePath)
-	if err != nil {
-		return nil, err
-	}
-	har := new(Har)
-	err = json.Unmarshal(harFileBytes, har)
-	if err != nil {
-		return nil, err
-	}
-	return har, nil
-}
+// Har represents a HAR file
+type Har = har.Har
 
-// ParseHar 解析HAR格式的文件
-func ParseHar(harFileBytes []byte) (*Har, error) {
-	har := new(Har)
-	err := json.Unmarshal(harFileBytes, har)
-	if err != nil {
-		return nil, err
-	}
-	return har, nil
-}
+// Log represents the log section of a HAR file
+type Log = har.Log
 
-// ------------------------------------------------- --------------------------------------------------------------------
+// Creator represents the creator information
+type Creator = har.Creator
 
-type Har struct {
-	Log Log `json:"log"`
-}
+// Browser represents browser information
+type Browser = har.Browser
 
-type Creator struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
-}
+// PageTimings represents page timing information
+type PageTimings = har.PageTimings
 
-type PageTimings struct {
-	OnContentLoad float64 `json:"onContentLoad"`
-	OnLoad        float64 `json:"onLoad"`
-	Comment       string  `json:"comment"`
-}
+// Pages represents a page in the HAR file
+type Pages = har.Pages
 
-type Pages struct {
-	StartedDateTime time.Time   `json:"startedDateTime"`
-	ID              string      `json:"id"`
-	Title           string      `json:"title"`
-	PageTimings     PageTimings `json:"pageTimings"`
-}
+// Headers represents HTTP headers
+type Headers = har.Headers
 
-type Headers struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
+// Request represents an HTTP request
+type Request = har.Request
 
-type Request struct {
-	Method      string    `json:"method"`
-	URL         string    `json:"url"`
-	HTTPVersion string    `json:"httpVersion"`
-	Cookies     []Cookie  `json:"cookies"`
-	Headers     []Headers `json:"headers"`
-	QueryString []any     `json:"queryString"`
-	HeadersSize int       `json:"headersSize"`
-	BodySize    int       `json:"bodySize"`
-}
+// Cookie represents an HTTP cookie
+type Cookie = har.Cookie
 
-type Cookie struct {
-	Name     string    `json:"name"`
-	Value    string    `json:"value"`
-	Path     string    `json:"path"`
-	Domain   string    `json:"domain"`
-	Expires  time.Time `json:"expires"`
-	HTTPOnly bool      `json:"httpOnly"`
-	Secure   bool      `json:"secure"`
-	SameSite string    `json:"sameSite"`
-}
+// Content represents response content
+type Content = har.Content
 
-type Content struct {
-	Size     int    `json:"size"`
-	MimeType string `json:"mimeType"`
-}
+// Response represents an HTTP response
+type Response = har.Response
 
-type Response struct {
-	Status       int       `json:"status"`
-	StatusText   string    `json:"statusText"`
-	HTTPVersion  string    `json:"httpVersion"`
-	Cookies      []Cookie  `json:"cookies"`
-	Headers      []Headers `json:"headers"`
-	RedirectURL  string    `json:"redirectURL"`
-	HeadersSize  int       `json:"headersSize"`
-	BodySize     int       `json:"bodySize"`
-	Content      Content   `json:"content"`
-	TransferSize int       `json:"_transferSize"`
-	Error        any       `json:"_error"`
-}
+// BeforeRequest represents cache state before request
+type BeforeRequest = har.BeforeRequest
 
-type BeforeRequest struct {
-}
+// AfterRequest represents cache state after request
+type AfterRequest = har.AfterRequest
 
-type AfterRequest struct {
-}
+// Cache represents cache information
+type Cache = har.Cache
 
-type Cache struct {
-	BeforeRequest BeforeRequest `json:"beforeRequest"`
-	AfterRequest  AfterRequest  `json:"afterRequest"`
-	Comment       string        `json:"comment"`
-}
+// Timings represents timing information for a request
+type Timings = har.Timings
 
-type Timings struct {
-	Blocked         float64 `json:"blocked"`
-	DNS             float64 `json:"dns"`
-	Connect         float64 `json:"connect"`
-	Send            float64 `json:"send"`
-	Wait            float64 `json:"wait"`
-	Receive         float64 `json:"receive"`
-	Ssl             float64 `json:"ssl"`
-	BlockedQueueing float64 `json:"_blocked_queueing"`
-	BlockedProxy    float64 `json:"_blocked_proxy"`
-}
+// Entries represents an entry in the HAR file
+type Entries = har.Entries
 
-type Entries struct {
-	StartedDateTime time.Time `json:"startedDateTime"`
-	Time            float64   `json:"time"`
-	Request         Request   `json:"request"`
-	Response        Response  `json:"response"`
-	Cache           Cache     `json:"cache"`
-	Timings         Timings   `json:"timings"`
-	Pageref         string    `json:"pageref"`
-	Initiator       Initiator `json:"_initiator"`
-	Priority        string    `json:"_priority"`
-	ResourceType    string    `json:"_resourceType"`
-	Connection      string    `json:"connection"`
-	ServerIPAddress string    `json:"serverIPAddress"`
-}
+// Initiator represents the initiator of a request
+type Initiator = har.Initiator
 
-type Initiator struct {
-	Type       string `json:"type"`
-	URL        string `json:"url"`
-	LineNumber int    `json:"lineNumber"`
-	Stack      Stack  `json:"stack"`
-}
+// Stack represents a call stack
+type Stack = har.Stack
 
-type Stack struct {
-	CallFrames []CallFrame `json:"callFrames"`
-	Parent     Parent      `json:"parent"`
-}
+// Parent represents parent information in a call stack
+type Parent = har.Parent
 
-type Parent struct {
-	Parent      *Parent     `json:"parent"`
-	Description string      `json:"description"`
-	CallFrames  []CallFrame `json:"callFrames"`
-	ParentID    ParentID    `json:"parentId"`
-}
+// ParentID represents a parent ID in a call stack
+type ParentID = har.ParentID
 
-type ParentID struct {
-	ID         string `json:"id"`
-	DebuggerID string `json:"debuggerId"`
-}
+// CallFrame represents a frame in a call stack
+type CallFrame = har.CallFrame
 
-type CallFrame struct {
-	FunctionName string `json:"functionName"`
-	ScriptID     string `json:"scriptId"`
-	URL          string `json:"url"`
-	LineNumber   int    `json:"lineNumber"`
-	ColumnNumber int    `json:"columnNumber"`
-}
+// HTTPMethod enum type for HTTP methods
+type HTTPMethod = har.HTTPMethod
 
-type Log struct {
-	Version string    `json:"version"`
-	Creator Creator   `json:"creator"`
-	Pages   []Pages   `json:"pages"`
-	Entries []Entries `json:"entries"`
-}
+// HTTP Method constants
+const (
+	MethodUnknown = har.MethodUnknown
+	MethodGET     = har.MethodGET
+	MethodPOST    = har.MethodPOST
+	MethodPUT     = har.MethodPUT
+	MethodDELETE  = har.MethodDELETE
+	MethodHEAD    = har.MethodHEAD
+	MethodOPTIONS = har.MethodOPTIONS
+	MethodPATCH   = har.MethodPATCH
+	MethodCONNECT = har.MethodCONNECT
+	MethodTRACE   = har.MethodTRACE
+)
 
-// ------------------------------------------------- --------------------------------------------------------------------
+// ConvertFormat for conversion formats
+type ConvertFormat = har.ConvertFormat
+
+// Format constants
+const (
+	FormatCSV      = har.FormatCSV
+	FormatMarkdown = har.FormatMarkdown
+	FormatHTML     = har.FormatHTML
+	FormatText     = har.FormatText
+)
+
+// Error types
+type (
+	ErrorCode              = har.ErrorCode
+	HarError               = har.HarError
+	ParseOptions           = har.ParseOptions
+	FilterOptions          = har.FilterOptions
+	FilterResult           = har.FilterResult
+	Result                 = har.Result
+	ConvertOptions         = har.ConvertOptions
+	OptimizedHar           = har.OptimizedHar
+	OptimizedEntries       = har.OptimizedEntries
+	OptimizedRequest       = har.OptimizedRequest
+	OptimizedResponse      = har.OptimizedResponse
+	OptimizedContent       = har.OptimizedContent
+	OptimizedTimings       = har.OptimizedTimings
+	StreamingHar           = har.StreamingHar
+	EntryIterator          = har.EntryIterator
+	StreamingEntryIterator = har.StreamingEntryIterator
+	LazyHar                = har.LazyHar
+	LazyContent            = har.LazyContent
+	LazyResponse           = har.LazyResponse
+	LazyEntries            = har.LazyEntries
+
+	// 接口类型
+	HARProvider         = har.HARProvider
+	EntryProvider       = har.EntryProvider
+	RequestProvider     = har.RequestProvider
+	ResponseProvider    = har.ResponseProvider
+	HeaderProvider      = har.HeaderProvider
+	CookieProvider      = har.CookieProvider
+	ContentProvider     = har.ContentProvider
+	TimingsProvider     = har.TimingsProvider
+	PageProvider        = har.PageProvider
+	PageTimingsProvider = har.PageTimingsProvider
+
+	// 选项类型
+	Option = har.Option
+)
+
+// Error code constants
+const (
+	ErrCodeUnknown       = har.ErrCodeUnknown
+	ErrCodeFileSystem    = har.ErrCodeFileSystem
+	ErrCodeJSONParse     = har.ErrCodeJSONParse
+	ErrCodeInvalidFormat = har.ErrCodeInvalidFormat
+	ErrCodeValidation    = har.ErrCodeValidation
+	ErrCodeMissingField  = har.ErrCodeMissingField
+	ErrCodeInvalidValue  = har.ErrCodeInvalidValue
+	ErrCodeUnsupported   = har.ErrCodeUnsupported
+)
+
+// Forward all functions
+var (
+	// Basic operations
+	ParseHarFile = har.ParseHarFile
+	ParseHar     = har.ParseHar
+	NewHar       = har.NewHar
+
+	// Optimized parsing
+	ParseHarFileOptimized = har.ParseHarFileOptimized
+	ParseHarOptimized     = har.ParseHarOptimized
+	ToOptimizedHar        = har.ToOptimizedHar
+
+	// Lazy loading
+	ParseHarWithLazyLoading     = har.ParseHarWithLazyLoading
+	ParseHarFileWithLazyLoading = har.ParseHarFileWithLazyLoading
+
+	// Streaming
+	NewStreamingHarFromFile = har.NewStreamingHarFromFile
+
+	// Enhanced parsing
+	ParseHarWithOptions      = har.ParseHarWithOptions
+	ParseHarFileWithOptions  = har.ParseHarFileWithOptions
+	ParseHarEnhanced         = har.ParseHarEnhanced
+	ParseHarFileEnhanced     = har.ParseHarFileEnhanced
+	ParseHarLenient          = har.ParseHarLenient
+	ParseHarFileLenient      = har.ParseHarFileLenient
+	ParseHarWithWarnings     = har.ParseHarWithWarnings
+	ParseHarFileWithWarnings = har.ParseHarFileWithWarnings
+	DefaultParseOptions      = har.DefaultParseOptions
+
+	// Error utilities
+	NewHarError            = har.NewHarError
+	NewFileSystemError     = har.NewFileSystemError
+	NewJSONParseError      = har.NewJSONParseError
+	WrapJSONUnmarshalError = har.WrapJSONUnmarshalError
+	NewValidationError     = har.NewValidationError
+	NewInvalidFormatError  = har.NewInvalidFormatError
+	NewMissingFieldError   = har.NewMissingFieldError
+	NewInvalidValueError   = har.NewInvalidValueError
+	NewUnsupportedError    = har.NewUnsupportedError
+
+	// Utilities
+	ParseMethod           = har.ParseMethod
+	DefaultConvertOptions = har.DefaultConvertOptions
+
+	// 新的函数选项模式API
+	Parse                      = har.Parse
+	ParseFile                  = har.ParseFile
+	NewStreamingParser         = har.NewStreamingParser
+	NewStreamingParserFromFile = har.NewStreamingParserFromFile
+
+	// 选项函数
+	WithLenient         = har.WithLenient
+	WithSkipValidation  = har.WithSkipValidation
+	WithCollectWarnings = har.WithCollectWarnings
+	WithMaxWarnings     = har.WithMaxWarnings
+	WithMemoryOptimized = har.WithMemoryOptimized
+	WithLazyLoading     = har.WithLazyLoading
+	WithStreaming       = har.WithStreaming
+
+	// 预定义选项组
+	OptMemoryEfficient = har.OptMemoryEfficient
+	OptFast            = har.OptFast
+	OptLenient         = har.OptLenient
+	OptPerformance     = har.OptPerformance
+)

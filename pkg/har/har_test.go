@@ -1,13 +1,14 @@
 package har
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseHar(t *testing.T) {
-	harFileContent, err := os.ReadFile("./data/www.google.com.har")
+	harFileContent, err := os.ReadFile("testdata/example.har")
 	assert.Nil(t, err)
 	har, err := ParseHar(harFileContent)
 	assert.Nil(t, err)
@@ -15,7 +16,7 @@ func TestParseHar(t *testing.T) {
 }
 
 func TestParseHarFile(t *testing.T) {
-	har, err := ParseHarFile("./data/www.google.com.har")
+	har, err := ParseHarFile("testdata/example.har")
 	assert.Nil(t, err)
 	t.Log(har)
 }

@@ -1,4 +1,4 @@
-module github.com/golang-infrastructure/go-har
+module github.com/cyberspacesec/go-har
 
 go 1.19
 

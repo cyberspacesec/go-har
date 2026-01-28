@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/golang-infrastructure/go-har"
 	"os"
+
+	"github.com/cyberspacesec/go-har"
 )
 
 func main() {
